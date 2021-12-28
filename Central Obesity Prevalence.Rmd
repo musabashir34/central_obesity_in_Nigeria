@@ -1,0 +1,350 @@
+---
+title: "Prevalence of Central Obesity in Nigeria; A Systematic Review and Meta-Analysis"
+author: 'M. A. Bashir^a,\*^ , A. I. Yahaya^b^, Mukhtar Muhammad^c^, A.H. Yusuf^d^, I.G. Mukhtar^e^'
+date: '`r Sys.Date()`'
+output:
+  bookdown::word_document2:
+    reference_docx: article_ref.docx
+bibliography: ref.bib
+csl: vancouver-superscript
+nocite: '@*'
+---       
+^a,\b,\c,\d^Department of Anatomy, Bayero University Kano,  PMB 3011 Kano State, Nigeria      
+^e^Department of Physiology, Bayero University Kano,  PMB 3011 Kano State, Nigeria        
+    
+Corresponding author:M.A Bashir^*^
+Email: [musabashir34\@gmail.com](mailto:musabashir34@gmail.com){.email}       
+Tel: +2347036878467       
+Postal Adress: PMB 3011 Kano State, Nigeria.       
+    
+Declarations of interest: none    
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE, dpi = 300)
+library(bookdown)
+library(flextable)
+library(ggplot2)
+library(tidyverse)
+library(ggpubr)
+library(scales)
+library(ggExtra)
+library(metafor)
+library(meta)
+library(metaviz)
+library(sf)
+library(metagear)
+library(ggstatsplot)
+data<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\prisma_chart_data\\studies_for_quantitative_analysis.csv')
+dataprev<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\obe_prev.csv')
+datamean<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\mean_wc.csv')
+datamean_reg<-datamean %>% filter(!region=='All six regions')
+dataprev_xy<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\obe_prev_gender.csv')
+datamean_xy<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\mean_wc_gender.csv')
+dataprev_sett<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\obe_prev_sett.csv')
+datamean_sett<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\mean_wc_sett.csv')
+calprev<-escalc(measure = 'PAS', xi = obs_count, ni= sample_sz, data = dataprev, append = TRUE)
+calmean<-escalc(measure = 'MNLN', mi = mean_wc, ni= sample_sz, sdi=wc_sd, data = datamean, append = TRUE)
+calmean_reg<-escalc(measure = 'MNLN', mi = mean_wc, ni= sample_sz, sdi=wc_sd, data = datamean_reg, append = TRUE)
+calprev_xy<-escalc(measure = 'PAS', xi = obs_count, ni= sample_sz, data = dataprev_xy, append = TRUE)
+calmean_xy<-escalc(measure = 'MNLN', mi = mean_wc, sdi=wc_sd, ni= sample_sz, data = datamean_xy, append = TRUE)
+calprev_sett<-escalc(measure = 'PAS', xi = obs_count, ni= sample_sz, data = dataprev_sett, append = TRUE)
+calmean_sett<-escalc(measure = 'MNLN', mi = mean_wc, sdi=wc_sd, ni= sample_sz, data = datamean_sett, append = TRUE)
+data0<-data %>% group_by(region, criteria) %>% summarize(number = n(), mean_sample_size= mean(sample_size, na.rm= TRUE)) %>% ungroup()
+data0<-data0 %>% mutate(numb= ifelse(criteria=='ATP III', number, -1*number))
+data1<-data %>% group_by(region) %>% summarize(number = n(), mean_age= mean(age, na.rm= TRUE), mean_sample_size= mean(sample_size, na.rm= TRUE)) %>% ungroup()
+data2<-data %>% group_by(region, settlement) %>% summarize(number = n(), mean_sample_size= mean(sample_size, na.rm= TRUE)) %>% ungroup()
+data2<-data2 %>% mutate(numb= ifelse(settlement=='urban+rural', number, -1*number))
+nigeria_data<-st_read('C:\\Users\\Musa Bashir\\Documents\\prevalence_of_prediabetes_nigeria\\nig.geojson')
+regions<-read.csv('C:\\Users\\Musa Bashir\\Documents\\prevalence_of_prediabetes_nigeria\\states.csv')
+nigeria_data<-rename(nigeria_data, states=admin1Name)
+nigeria_data<-left_join(nigeria_data, regions)
+modelprev<-rma.uni(data = calprev, yi, vi, digits = 3, method = 'SJ')
+modelprev_criteria<-rma.uni(data = calprev, yi, vi, digits = 3, mods=~factor(criteria), method = 'SJ')
+modelprev_criteriancept<-rma.uni(data = calprev, yi, vi, digits = 3, mods=~factor(criteria)-1, method = 'SJ')
+criteria_prev<-confint.rma.uni(modelprev_criteriancept, transf = transf.iarcsin, fixed = TRUE, random = FALSE)
+criteria_prev<-data.frame(criteria_prev$fixed)
+modelmean<-rma.uni(data = calmean, yi, vi, digits = 1, method = 'SJ')
+modelmean_data<-confint.rma.uni(modelmean, transf = exp, fixed = TRUE, random = FALSE)
+modelmean_data<-data.frame(modelmean_data$fixed)
+modelprev_xy<-rma.uni(data = calprev_xy, yi, vi, mods= ~factor(gender), digits = 3, method = 'SJ')
+modelprev_xyncept<-rma.uni(data = calprev_xy, yi, vi, mods= ~factor(gender):factor(criteria)-1, digits = 3, method = 'SJ')
+prevsex<-confint.rma.uni(modelprev_xyncept, transf = transf.iarcsin, fixed = TRUE, random = FALSE)
+prevsex<-data.frame(prevsex$fixed)
+modelmean_xy<-rma.uni(data = calmean_xy, yi, vi, mods= ~factor(gender), digits = 3, method = 'SJ')
+modelmean_xyncept<-rma.uni(data = calmean_xy, yi, vi, mods= ~factor(gender)-1, digits = 3, method = 'SJ')
+meansex<-confint.rma.uni(modelmean_xyncept, transf = exp, fixed = TRUE, random = FALSE)
+meansex<-data.frame(meansex$fixed)
+modelprev_sett<-rma.uni(data = calprev_sett, yi, vi, mods= ~factor(settlement), digits = 3, method = 'SJ')
+modelprev_settncept<-rma.uni(data = calprev_sett, yi, vi, mods= ~factor(settlement):factor(criteria)-1, digits = 3, method = 'SJ')
+prevsett<-confint.rma.uni(modelprev_settncept, transf = transf.iarcsin, fixed = TRUE, random = FALSE)
+prevsett<-data.frame(prevsett$fixed)
+modelmean_sett<-rma.uni(data = calmean_sett, yi, vi, mods= ~factor(settlement), digits = 3, method = 'SJ')
+modelmean_settncept<-rma.uni(data = calmean_sett, yi, vi, mods= ~factor(settlement)-1, digits = 3, method = 'SJ')
+meansett<-confint.rma.uni(modelmean_settncept, transf = exp, fixed = TRUE, random = FALSE)
+meansett<-data.frame(meansett$fixed)
+modelprev_reg<-rma.uni(data = calprev, yi, vi, digits = 3, mods=~factor(region), method = 'SJ')
+modelprev_regncept<-rma.uni(data = calprev, yi, vi, digits = 3, mods=~factor(region):factor(criteria)-1, method = 'SJ')
+prevreg<-confint.rma.uni(modelprev_regncept, transf = transf.iarcsin, fixed = TRUE, random = FALSE)
+prevreg<-data.frame(prevreg$fixed)
+modelmean_reg<-rma.uni(data = calmean_reg, yi, vi, digits = 3, mods=~factor(region), method = 'SJ')
+modelmean_regncept<-rma.uni(data = calmean_reg, yi, vi, digits = 3, mods=~factor(region)-1, method = 'SJ')
+meanreg<-confint.rma.uni(modelmean_regncept, transf = exp, fixed = TRUE, random = FALSE)
+meanreg<-data.frame(meanreg$fixed)
+PI_prev<-data.frame(predict.rma(modelprev, transf = transf.iarcsin))
+PI_mean<-data.frame(predict.rma(modelmean, transf = exp))
+prev_metaregression<-rma.uni(data = calprev_xy, yi, vi, mods= ~factor(gender)+mean_wc+sample_sz+ factor(region)+factor(criteria)+study.year, digits = 3, method = 'SJ')
+prev_metaregressioncept<-rma.uni(data = calprev_xy, yi, vi, mods= ~factor(gender)+mean_wc+sample_sz+ factor(region)+factor(criteria)+study.year-1, digits = 3, method = 'SJ')
+mean_metaregression<-rma.uni(data = calmean_xy, yi, vi, digits = 3, mods=~log(age)+factor(region)+factor(settlement)+factor(gender)+Proportion_of_high_WC+factor(criteria)
+,method = 'SJ')
+mean_metaregressioncept<-rma.uni(data = calmean_xy, yi, vi, digits = 3, mods=~log(age)+factor(region)+factor(settlement)+factor(gender)+Proportion_of_high_WC+factor(criteria)
+-1,method = 'SJ')
+data4<-data.frame((confint.rma.uni(prev_metaregressioncept, transf = transf.iarcsin, fixed = TRUE, random = FALSE)$fixed))
+data4<-rename(data4, conf.low=ci.lb, conf.high=ci.ub)
+data4<-rownames_to_column(data4, var = 'term')
+p<-data.frame(statistic=prev_metaregressioncept$zval, p.value=prev_metaregressioncept$pval )
+data4<-bind_cols(p, data4)
+data4<-data4 %>% filter(p.value<0.05)
+data5<-data.frame((confint.rma.uni(mean_metaregressioncept, transf = exp, fixed = TRUE, random = FALSE)$fixed))
+data5<-rename(data5, conf.low=ci.lb, conf.high=ci.ub)
+data5<-rownames_to_column(data5, var = 'term')
+q<-data.frame(statistic=mean_metaregressioncept$zval, p.value=mean_metaregressioncept$pval )
+data5<-bind_cols(q, data5)
+data5<-data5 %>% filter(p.value<0.05)
+m<-data.frame(Criteria=c( 'Central Obesity Prevalence', 'Central Obesity Prevalence', 'Mean WC', 'Mean WC'), heterogeneity_measure = c('tau-squared', 'I-squared','tau-squared', 'I-squared'))
+n<-data.frame(perc_change =c((prev_metaregression$R2/100), (modelprev$I2-prev_metaregression$I2)/modelprev$I2, (mean_metaregression$R2/100), (modelmean$I2-mean_metaregression$I2)/modelmean$I2))
+n<-n %>% mutate(perc_change= round(perc_change*100, digits = 0))
+m<-bind_cols(m, n)
+```
+    
+    
+ABSTRACT
+Background
+Elevated waist circumference results from an excessive accumulation of visceral fat causing an impairment of health. Waist Circumference is highly correlated with diabetes, cardiovascular disease and all-cause mortality. 
+Objectives
+This study aims to estimate the overall, sex-specific and region-specific prevalence rates of central obesity in Nigeria.
+Methods
+Online searches of Google Scholar, PubMed and Scopus were conducted and studies selected based on predefined criteria. Random Effects Model was fitted using inverse variance method with correction using Sidik-Jonkman’s estimator
+
+    
+Results       
+
+`r nrow(data)` studies consisting of `r sum(data$sample_size)` individuals conducted between `r min(data$study.year)` and `r max(data$study.year)` were included in the meta-analysis. `r round(criteria_prev[2,1]*100, digits=0)`% (95% CI: `r round(criteria_prev[2,2]*100, digits=0)`%-`r round(criteria_prev[2,3]*100, digits=0)`%, I^2^ = `r round(modelprev_criteria$I2, digits= 1)`%) of adult Nigerians are centrally obese (by IDF criteria).  This translates to estimated `r round(criteria_prev[2,1]*120, digits =1)` million centrally obese adult Nigerians. More than half [`r round(prevsex[3,1]*100, digits=0)`% (95% CI:`r round(prevsex[3,2]*100, digits=0)`%-`r round(prevsex[3,3]*100, digits=0)`% )] of adult females are centrally obese. This is four times the prevalence in males  [`r round(prevsex[4,1]*100, digits=0)`% (95% CI:`r round(prevsex[4,2]*100, digits=0)`%-`r round(prevsex[4,3]*100, digits=0)`% )]. Although southern regions have higher prevalence of central obesity than northern regions in general (`r round(prevreg[1,1]*100, digits=0)`% vs `r round(prevreg[2,1]*100, digits=0)`%), the northern regions' centrally obese are particularly at a substantially more increased risk for cardiovascular disease (`r round(prevreg[4,1]*100, digits=0)`% vs `r round(prevreg[3,1]*100, digits=0)`%). The overall mean waist circumference in Nigeria is `r round(modelmean_data[1,1], digits =1)`cm (95% CI: `r round(modelmean_data[1,2], digits =1)`cm-`r round(modelmean_data[1,3], digits =1)`cm,I^2^ = `r round(modelmean$I2, digits= 1)`%, *P* value is `r pvalue(modelmean$pval)` ). Differences in central obesity prevalence rates reflect differences in mean waist circumferences.         
+    
+Conclusions        
+            
+Females, Urban residents and individuals living in the northern part of Nigeria have a high burden of central obesity. Public health measures for halting the epidemic of obesity should be targeted at these high risk groups.
+
+**Keywords**: Obesity, Nigeria, Waist Circumference, Systematic Review, Meta-analysis           
+    
+# INTRODUCTION        
+        
+Obesity is an excessive accumulation of fat in adipose tissue causing an impairment of health[@lemieuxSexDifferencesRelation1993; @whoconsultationonobesity1999:genevaObesityPreventingManaging2000]. Waist Circumference is a good correlate of abdominal fat and thus used to measure central or abdominal obesity[@pouliotWaistCircumferenceAbdominal1994]. The Third Report of the National Cholesterol Education Program (NCEP) Expert Panel on Detection, Evaluation, and Treatment of High Blood Cholesterol in Adults (ATP III) defines central obesity as waist circumference of above 102 cm for males and above 88 cm for females[@expertpanelondetectionevaluationandtreatmentofhighbloodcholesterolinadultsExecutiveSummaryThird2001]. Definitions of central obesity by the The International Diabetes Federation (IDF) are not only gender-specific but ethnicity-specific as well with Europoids cut off values of above 94 cm for males and above 80 cm for females; these values are recommended for African populations until more data are available[@albertiMetabolicSyndromeNew2006].
+A recent meta-analysis of 288 studies showed that the prevalence of central obesity is rising from 31.3% in the years 1985–1999 to 48.3% in the years 2010–2014 with the prevalence in Africa found to be high (49.7%) even though the region is dominated by low and middle income countries[@wongGlobalRegionalTimetrend2020].
+Waist circumference is correlated to diabetes, cardiovascular disease and all-cause mortality with a 10 cm increase in waist circumference found to be associated with 11% higher risk of all-cause mortality[@jayediCentralFatnessRisk2020] and development of diabetes[@seoWaistCircumference1022017].
+Despite the importance of central obesity, there are no systematic reviews and meta-analyses of the prevalence of abdominal obesity in Nigeria. Females (for biological reasons), urban residents and more economically advanced southern regions may have higher rates of obesity and represent high risk groups[@worldhealthorganizationWaistCircumferenceWaisthip2011]. This study aims to estimate: 1. The overall prevalence of central obesity in Nigeria and 2. sex-specific and region-specific prevalence rates of central obesity in the country.
+
+            
+# METHODOLOGY
+    
+The systematic review and meta-analysis was reported according to the Meta-analysis of Observational Studies in Epidemiology (MOOSE) guidelines[@stroupMetaanalysisObservationalStudies2000].    
+        
+## Study Area
+
+Nigeria is a lower middle income[@WDIWorldIncome] western African nation with an area of 923,769 sq km, home to more than 250 ethnic groups [@udoNigeria2020]. It has 36 states and a capital divided into 6 geo-political zones or regions; 3 regions each in the northern and southern parts of the country. The estimated population in 2021 is 211.4 million. 43.4% of the population are under the age of 14 years. 53.9% of the population are between the ages of 15 and 64 years. Only 2.8% of the population are above the age of 65 years.[@unfpa-unitednationspopulationfundUNFPAUnitedNations2021]. Supplementary material S1 shows the map of the geopolitical zones of the country.
+
+```{r zones}
+#ggplot()+geom_sf(mapping = aes(fill=region, color=region), data = nigeria_data)+theme_bw()+scale_fill_discrete(name= 'Regions', labels= c('North-Central', 'North-East', 'North-West', 'South-East', 'South-South', 'South-West'))+scale_color_discrete(name= 'Regions', labels= c('North-Central', 'North-East', 'North-West', 'South-East', 'South-South', 'South-West'))+ labs(caption = 'Simple Features File Source: Humanitarian Data Exchange (2020)')
+```
+        
+## Inclusion and Exclusion Criteria           
+        
+Included in this systematic review are population-based studies in Nigeria conducted in individuals aged 15-65 years. Included studies must use either the IDF or NCEP ATP III criteria for diagnosing central obesity. Only articles in English language were included. Excluded from this review are studies conducted in pregnant women, studies failing to report prevalence of or the criteria used in defining central obesity and all hospital-based studies. Unpublished studies and those with only abstracts available are also excluded.              
+            
+## Studies Search Strategies
+
+Online databases used were Google Scholar, PubMed and Scopus. Search words and phrases used were: ‘waist circumference,’ ‘central obesity,’ ‘central adiposity’ and ‘abdominal obesity.’ Search was repeated for each word or phrase with the name ‘Nigeria.’ Search was conducted from May 2021 to August 2021. Screening of the abstracts and titles of the articles was done independently by two reviewers (AHY and IGM) and studies selection and exclusion done based on the predefined criteria. Efforts were made to include all available studies including search of references in the included studies. Thereafter, screening of the full-text articles was done independently by the same researchers to select the studies to be included in qualitative and quantitative analyses.       
+    
+## Quality Appraisal of the Included Studies    
+    
+The methodological quality of the included studies was assessed using a modification of the Joanna Briggs Institute (JBI) Critical Appraisal Checklist for Studies Reporting Prevalence Data[@joannabriggsinstituteJoannaBriggsInstitute2017]. The item’s original 9 questions were reduced to six (6) with questions one (1) and two (2) were given a score of two (2) and the remaining four (4) question each given a score of one (1) for a ‘yes’ and zero (0) for a ‘no.’ The total maximum score is eight(8). A study was judged as good quality if it scored minimum of seven (7), moderate quality if it scored six (6) and of poor quality if it scores less than six (6). Assessment was done independently by two reviewers (AHY and MM) with disagreements sorted by AIH. Supplemental Material S2 shows the modified tool used in critical appraisal of the included studies. Only studies judged as having good or moderate methodological quality were included in the quantitative analysis.           
+    
+        
+## Data Extraction and Quantitative Analysis
+
+Data extraction was independently done by two reviewers (MAB and IGM). Extracted information from the studies included prevalence of central obesity, mean and standard deviation of the waist circumference, sample size, settlement (urban/rural), state and region of the study, study year, mean age and sex composition of the study participants. Data was entered into Excel and then imported into R statistical environment for statistical computing, version 4.1.0.1[@rcoreteamLanguageEnvironmentStatistical2021].
+Metafor Package[@viechtbauerConductingMetaanalysesMetafor2010] was used to fit Random Effects Model for pooling prevalences and Mixed Effects Model for meta-regression using inverse variance method with correction of pooled estimate and its variance using Sidik-Jonkman’s estimator for between study heterogeneity[@sidikConstructingConfidenceIntervals2003].       
+    
+Heterogeneity between studies will be investigated using meta-regression. Pseudo-R^2^, defined as percentage of explained heterogeneity after fitting the meta-regression model, would be used to estimate the amount of heterogeneity due to study level characteristics.       
+Prediction Intervals were reported to overcome the difficulties in interpreting both tau^2^ and I^2^ as measures of between study heterogeneity[@borensteinBasicsMetaanalysisNot2017]    
+    
+        
+## Publication Bias Assessment        
+    
+Funnel plot was used to visually inspect for possible publication bias where studies reporting small prevalence were not published and thus not included in the meta-analysis. Formal regression test develooped by Egger and colleagues[@eggerBiasMetaanalysisDetected1997] was employed for testing funnel plot asymmetry.    
+
+# RESULTS       
+    
+## Search Results   
+    
+Figure \@ref(fig:prisma) shows the results of the search strategy.        
+    
+    
+            
+```{r prisma, fig.cap= 'Results of the Search'}
+ phases <- c("START_PHASE: # of studies identified through database searching Google Scholar = 9109, Scopus = 200, Pubmed = 143",
+            "START_PHASE: # of additional studies identified through other sources 9",
+            "# of studies after duplicates removed 1456",
+           "# of studies with title and abstract screened 1456",
+            "EXCLUDE_PHASE: # of studies excluded 1399",
+            "# of full-text articles assessed for eligibility 57",
+            "EXCLUDE_PHASE: # of full-text excluded, not fitting eligibility criteria 17",
+            "# of studies included in qualitative synthesis 40",
+            "EXCLUDE_PHASE: # studies excluded, poor quality 22",
+            "final # of studies included in quantitative synthesis (meta-analysis) 18")
+plot_PRISMA(phases, design = "cinnamonMint", excludeDistance = 1, colWidth = 40)
+```                    
+    
+        
+            
+## Methodological features and the Critical Appraisal of the Included Studies           
+    
+ 40 studies were selected and included in the qualitative analysis of methodological features. The quality appraisal of the included studies is shown in the supplemental material S3.     
+    
+            
+## Characteristics of the Studies Included in the Quantitative Analysis                   
+`r nrow(data)` studies consisting of `r sum(data$sample_size)` individuals met the inclusion criteria and are of good or moderate quality and thus included in the meta-analysis. Figure \@ref(fig:raw) showed the mean age, mean sample size, criteria and area of residence of the included studies.    
+
+```{r raw, fig.cap= 'Characteristics of the Included Studies'}
+mage<-round(mean(data$age, na.rm = TRUE), digits= 0)
+msize<-round(mean(data$sample_sz, na.rm = TRUE), digits= 0)
+breaks0<-pretty(data0$numb)
+x<-ggplot(data0, aes(y=fct_reorder(region, numb), x= numb, color= criteria))+geom_point(size=1.5)
+x<-x+geom_segment(data= data0, aes(y=fct_reorder(region, numb), yend=region, x=0, xend= numb))
+x<-x+geom_vline(xintercept = 0)+ scale_x_continuous(name = 'Number of Studies', breaks = breaks0, labels = abs(breaks0))+ scale_y_discrete(name= 'Regions')+
+  geom_text(aes(label=abs(numb)), size=0.5, color= 'black', vjust=1)+theme_classic()+labs(title = 'Criteria', color= 'criteria')+guides(color=guide_legend(reverse = TRUE))+theme(legend.position = 'top')
+x1<-ggplot(data1, aes(y=fct_reorder(region, mean_age), x= mean_age, color= mean_age>mage))+geom_point(size=1.5)
+x1<-x1+geom_segment(data= data1, aes(y=fct_reorder(region, mean_age), yend=region, x=43, xend= mean_age))
+x1<-x1+geom_vline(xintercept = 43)+geom_text(aes(label=round(mean_age, digits = 0)), color= 'black', nudge_x = 1, nudge_y = 0.3)
+x1<-x1+labs(title = 'Age', x= 'average age', y= 'Regions')+theme(legend.position ='none')+scale_x_continuous(limits = c(34.5, 55.5))
+x2<-ggplot(data1, aes(y=fct_reorder(region, mean_sample_size), x= mean_sample_size, color= mean_sample_size>947))+geom_point(size=1.5)
+x2<-x2+geom_segment(data= data1, aes(y=fct_reorder(region, mean_sample_size), yend=region, x=947, xend= mean_sample_size))
+x2<-x2+geom_vline(xintercept = 947)+geom_text(aes(label=round(mean_sample_size, digits = 0)), color= 'black',nudge_x = 0.1, nudge_y = -0.4, hjust=1, vjust=-1)
+x2<-x2+labs(title = 'Studies Sizes', x= 'Sample Size', y= 'Regions')+theme(legend.position ='none')+scale_color_manual(values = c('yellow', 'green'))+scale_x_continuous(limits = c(-600, 3000))
+breaks2<-pretty(data2$numb)
+x3<-ggplot(data2, aes(y=fct_reorder(region, numb), x= numb, color= settlement))+geom_point(size=1.5)
+x3<-x3+geom_segment(data= data2, aes(y=fct_reorder(region, numb), yend=region, x=0, xend= numb))
+x3<-x3+geom_vline(xintercept = 0)+ scale_x_continuous(name = 'Number of Studies', breaks = breaks2, labels = abs(breaks2))+ scale_y_discrete(name= 'Regions')+ geom_text(aes(label=abs(numb)), size=0.5, color= 'black', vjust=1)+theme_classic()+labs(title = 'Settlement', color= 'settlement')+guides(color=guide_legend(reverse = TRUE))+theme(legend.position = 'right')
+ggarrange(x1, x2,x3,x, labels = 'AUTO', font.label = (size= 11), align = 'hv')
+```
+    
+
+        
+## Fitting the Meta Analytic Models
+
+Random Effects Model was fitted using inverse variance method with correction of pooled estimate and its variance using Sidik-Jonkman's estimator for between study heterogeneity. Prevalence rates were tranformed using arcsine transformation and means were log transformed.  Figure \@ref(fig:model1) shows the forest plot of the models. The pooled prevalence of central obesity under the IDF criteria,`r round(criteria_prev[2,1]*100, digits=0)`% (95% CI: `r round(criteria_prev[2,2]*100, digits=0)`%-`r round(criteria_prev[2,3]*100, digits=0)`%), is higher than the value of `r round(criteria_prev[1,1]*100, digits=0)`% (95% CI: `r round(criteria_prev[1,2]*100, digits=0)`%-`r round(criteria_prev[1,3]*100, digits=0)`%) under the ATP III criteria. The *P* values for the random meta analytic model is `r pvalue(modelprev_criteria$QMp)`, the estimated total between studies heterogeneity not explained by sampling error (I^2^) is  `r round(modelprev_criteria$I2, digits= 0)`%. Test for Heterogeneity is significant with p-value`r pvalue(modelprev_criteria$QEp)` indicating substantial heterogeneity between the included studies. The prediction interval of the pooled prevalence is `r round(PI_prev[1,4]*100, digits= 1)`%-`r round(PI_prev[1,5]*100, digits=1)`%.       
+    
+The overall mean waist circumference in Nigeria is `r round(modelmean_data[1,1], digits =1)`cm (95% CI: `r round(modelmean_data[1,2], digits =1)`cm-`r round(modelmean_data[1,3], digits =1)`cm). The *P* values for the pooled mean model is `r pvalue(modelmean$pval)`, the estimated total between studies heterogeneity not explained by sampling error (I^2^) is  `r round(modelmean$I2, digits= 1)`%. Test for Heterogeneity is significant with p-value`r pvalue(modelmean$QEp)` indicating substantial heterogeneity between the included studies. The prediction interval of the pooled mean waist circumference is `r round(PI_mean[1,4], digits= 1)`cm-`r round(PI_mean[1,5], digits=1)`cm.    
+    
+```{r}
+d<-rainforest(modelmean_xy, group = datamean_xy$gender,summary_name= c('Females','Males'), xlab= 'Mean WC', study_labels=calmean_xy$study_id, summary_col = 'Greens', text_size = 1.5, annotate_CI = TRUE, x_trans_function = exp)
+d<-d+theme(plot.margin = margin(0, 0, 0, -0.5, 'cm'))
+h<-rainforest(modelmean_reg, group = calmean_reg$region,summary_name= c('Northern Regions', 'Southern-Regions'), xlab= 'Mean WC', study_labels=calmean_reg$study_id, summary_col = 'Greens', text_size = 1.5, annotate_CI = TRUE, x_trans_function = exp)
+h<-h+theme(plot.margin = margin(0, 0, 0, 0, 'cm'))
+j<-rainforest(modelmean_sett, group = calmean_sett$sett,summary_name= c('Rural', 'Urban', 'Urban+Rural'), xlab= 'Mean WC', study_labels=calmean_sett$study_id, summary_col = 'Greens', text_size = 1.5, annotate_CI = TRUE, x_trans_function = exp)
+j<-j+theme(plot.margin = margin(0, 0, 0, 0, 'cm'))
+```
+        
+
+```{r model1, fig.cap='forest plots of Pooled Central Obesity and Mean Waist Circumference'}
+cr<-rainforest(modelprev_criteria, group = calprev$criteria,summary_name= c('ATP III','IDF'), study_labels = calprev$study_id, annotate_CI = TRUE, x_trans_function = transf.iarcsin, text_size = 1.5, summary_col = 'Greens')
+cr<-cr+theme(plot.margin = margin(0.5, 0, 2, -0.5, 'cm'))
+b<-rainforest(modelmean, x_trans_function = exp, annotate_CI = TRUE, study_labels=calmean$study_id, summary_col = 'Greens', text_size = 1.5)
+b<-b+theme(plot.margin = margin(0.5, 0, 2, -0.5, 'cm'))
+ggarrange(cr, b, labels = c('Prevalence', 'Mean WC'), nrow = 1, vjust = 1)
+```    
+    
+                
+        
+        
+## Analysis of Between-Study Heterogeneity
+    
+A meta-regression model was fitted using geo-political region, settlement, criteria and participants' mean age of the included studies. For the prevalence of central obesity prevalence model, value of pseudo-R^2^ after fitting the meta-regression model was  `r round(prev_metaregression$R2, digits = 1)`%. The corresponding pseudo-R^2^ for the mean waist circumference was `r round(mean_metaregression$R2, digits = 1)`%.  This means most of the heterogeneity between the studies results from the differences in study characteristics.  The relative changes in the two heterogeneity measures (I^2^ and tau^2^) after fitting the meta-regression models for both pooled prevalence of central obesity and pooled mean waist circumference are shown in Supplemental Material S6.  Supplemental Material S7 shows the model coefficients of the meta-regression models.        
+    
+```{r het}
+z<-ggplot(data=m, aes(x= perc_change, y= fct_reorder(Criteria, perc_change)))+ geom_point(aes(color= heterogeneity_measure), size = 10)+geom_line(aes(group= Criteria), color= 'red')+labs(x= 'Percentage Decrease', y= 'Meta-regression Model')+ geom_text(aes(label=perc_change))+theme_classic()
+```    
+    
+    
+          
+```{r metregprev}
+mm<-ggcoefstats(data4, statistic = 'z', ylab = 'Predictors', xlab = 'Prevalence', sort = 'descending')
+nn<-ggcoefstats(data5, statistic = 'z', ylab = 'Predictors', xlab = 'Mean', sort = 'descending')
+#ggarrange(mm, nn, labels='AUTO')
+```
+    
+      
+             
+## Analysis of Publication Bias           
+    
+```{r fun}
+a1<-regtest(modelprev)
+b1<-regtest(modelmean)
+line = 1
+cex = 2
+side = 3
+adj=-0.05
+part<-par(mfrow=c(1, 2))
+funnel.rma(modelprev)
+mtext("(A)", side=side, line=line, cex=cex, adj=adj)
+funnel.rma(modelmean)
+mtext("(B)", side=side, line=line, cex=cex, adj=adj)
+par(part)
+```    
+      
+The funnel plots of the pooled prevalence and mean waist circumference models are shown in Figure \@ref(fig:fun). There was no obvious asymmetry in the plots. Formal test for plot asymmetry (regression test) was conducted and it was not statistically significant (*P* value is `r pvalue(a1$pval)` and `r pvalue(b1$pval)` for the pooled prevalence rate and mean waist circumference respectively), confirming the visual assessment of the funnel plot.            
+            
+
+## Sex-specific and Region-specific Prevalence of Central Obesity               
+    
+As shown in Table \@ref(tab:sub), Estimates of prevalence under the IDF criteria are consistently higher than estimates under the ATP III criteria. Additionally, females, Urban residents and individuals from the southern regions have consistently higher prevalence rates of central obesity under both ATP III and IDF criteria than their Males, Rural and Northern region residents counterparts.    
+
+                
+```{r sub, tab.cap= 'Prevalence Rates by Gender, Area of Residence and Region'}
+group<-read.csv('C:\\Users\\Musa Bashir\\Documents\\central_obesity\\sub_groups.csv')
+autofit(flextable(group))
+```
+
+    
+      
+          
+# DISCUSSION        
+    
+The overall prevalence of central obesity in Nigeria is high with almost 2 (two) out of every 5 (five) adult Nigerians being centrally obese (by IDF criteria). This translates to estimated 46.8 million centrally obese adult Nigerians. Females are disproportionately afflicted with more than half [54% (95% CI:39%-68% )] being centrally obese. This is four times the prevalence in males [13% (95% CI:5%-24% )]. Southern regions more than twice the prevalence of central obesity than northern regions (48% vs 18%).  Metaregression carried out to explain heterogeneity between the studies reduced the tau^2^ by almost `r round(prev_metaregression$R2, digits = 0)`% but I^2^ barely changed (Supplementary Material S6). This is because the latter is less specific as it is sensitive to sample size[@harrerDoingMetaAnalysisHandsOn2021]. The prediction intervals for the pooled prevalence of central obesity (`r round(PI_prev[1, 4]*100, digits=0)`%-`r round(PI_prev[1, 5]*100, digits=0)`%) is a measure of the precision of any future prevalence study of central obesity in Nigeria.           
+    
+##  Overall Burden of Central Obesity   
+        
+The higher pooled crude prevalence of central obesity under the IDF criteria (`r round(criteria_prev[2,1]*100, digits=0)`%)  compared to pooled prevalence under the ATP III criteria (`r round(criteria_prev[1,1]*100, digits=0)`%) is due to the fact that the former criteria uses a lower waist circumference threshold than the latter resulting in higher number of individuals diagnosed with obesity[@albertiHarmonizingMetabolicSyndrome2009; @expertpanelondetectionevaluationandtreatmentofhighbloodcholesterolinadultsExecutiveSummaryThird2001]. According to the latest data by the United Nations[@unfpa-unitednationspopulationfundUNFPAUnitedNations2021], this translates to estimated `r round(criteria_prev[2,1]*120, digits =1)` million and `r round(criteria_prev[1,1]*120, digits =1)` centrally obese individuals in Nigeria under the IDF and ATP III criteria respectively. The two thresholds have been recognized by WHO to represent different levels of cardiovascular risk with the former denoting increased risk and the latter substantially increased risk, at least in Europoid populations[@whoconsultationonobesity1999:genevaObesityPreventingManaging2000]. It has also been suggested that the two criteria correspond respectively to BMI levels of overweight (>/= 25kg/m^2^) and obesity (>/= 30kg/m^2^)[@leanWaistCircumferenceMeasure1995]. The pooled prevalence under the IDF criteria is thus a reflection of prevalence of overweight and obesity. A recent meta-analysis conducted in Nigeria found the combined prevalence of overweight and obesity to be 39.3%[@adeloyeEstimatingPrevalenceOverweight2021], which is very close to the prevalence of central obesity under IDF criteria we found in this meta-analysis (`r round(criteria_prev[2,1]*100, digits=0)`%). The prevalence of central obesity in Nigeria is lower than the global average (41.5%) and the average in the African continent (45.7%) but similar to the average in middle income countries, based on a recent large meta-analysis [@wongGlobalRegionalTimetrend2020].        
+        
+Given the established known risks of central obesity[@jayediCentralFatnessRisk2020], these numbers represent a potential for increasing burden of diabetes and cardiovascular diseases in the country. Supplementary Material S6 showed the public health impract (as measured by the population attributable fraction, PAF ) due to central obesity based on the prevalence estimates of this meta-analyses and reported relative risk measures for stroke[@owolabiDominantModifiableRisk2018], myocardial infarction (MI)[@yusufEffectPotentiallyModifiable2004] and diabetes[@freemantleHowStrongAssociation2008] as reported by other studies. The proportion of stroke, MI and diabetes that could potentially be eliminated from Nigeria through the control of central obesity are 24%, 15% and 21% respectively. Given the Nigeria's massive infrastructure deficit in healthcare[@alkaliTertiaryHospitalStandards2020], the realistic option of controlling the burden of cardiovascular diseases is to invest in public health programs for the prevention of cardiovascular risks. The PAF numbers due to central obesity  make the latter a promising targent for public health preventive measures. Nigeria's government took a necessary step in 2019 by rolling out the National Multi-sectoral Action Plan (NMSAP) for the Prevention and Control of Non-communicable diseases (2019-2025)[@nigeriafederalministryofhealthNationalMultiSectoralAction2019]. Although this plan is ambitious and has recently secured committment of the Federal Legislatures to enact tax on carbonated beverages[@NASSSupportsTax2021], it is hampered by lack of baseline data necessary for planning, implementation evaluation of its programs. For example, the policy document of the plan did not report a measure of public health impact of any of the established risk factors for non-communicable diseases. For central obesity, not even an estimate of its prevalence was reported in the policy document[@nigeriafederalministryofhealthNationalMultiSectoralAction2019]. It is difficult to mobilize non-health sectors and non-state actors as envisioned by the plan if the potential impact of reaching the plan's targets are not clearly stated.      
+        
+    
+## Sex-specific Prevalence of Central Obesity    
+        
+The higher prevalence of central obesity among females compared to males (54% versus 13%) is similar to was found in measure of generalized obesity (BMI) in the country[@adeloyeEstimatingPrevalenceOverweight2021].  This is also a trend observed globally [@wongGlobalRegionalTimetrend2020]. In Nigeria, this may be due to the fact that women are less active than men as found in a recent meta-analysis [@adeloyeEpidemiologyPhysicalInactivity2021]. This may explain the higher prevalence in females despite the well-known sexual dimorphism in central obesity where the male hormone, testosterone, favor greater central fat deposition[@worldhealthorganizationWaistCircumferenceWaisthip2011]. The contribution of this high prevalence of female central obesity to the burden of stroke, MI and diabetes in Nigeria are 33%, 21% and 29% respectively (Supplemental Material S6). Controlling central obesity in this gender will potentially result in the corresponding decreases in the burden of these diseases. The public health impact of central obesity for males in Nigeria is less pronounced with PAF of less than 5% for MI and PAF of 8% and 7% for stroke and diabetes respectively (Supplemental Material S6)     
+    
+## Prevalence of Central Obesity by Region and Settlement       
+    
+The higher prevalence of central obesity in the urban settlements compared to rural areas (45% versus 28%) might be due to the fact that urban residents are less physically active due to access to motorized transport, clerical and mechanized work activity and access to work-saving devices even for home related activities like cooking and laundry. Access to energy dense foods like refined sugar and saturated fats is also higher in urban settlements [@whoconsultationonobesity1999:genevaObesityPreventingManaging2000]. The PAF numbers of central obesity among urban residents mean that almost a quarter (1/4) of stroke and diabetes cases can be eliminated in the urban settlements by eliminating central obesity. For MI, the corresponding proportion is less than one-fifth (1/5). Even among rural dwellers, eliminating central obesity will potentially lead to the reduction of stroke, MI and diabetes by more than 10% (Supplementary Material S6)     
+    
+The differences between northern and southern regions are more complex. Estimates of IDF criteria, reflecting combination of individuals with increased and those with substantially increased risk for cardiovascular disease, reveal higher prevalence in the southern compared to northern regions (48% versus 8%). This is due to the fact that southern regions have higher levels of socio-economic development and rates of urbanization [@aliyuUrbanizationCitiesHealth2017; @mayahInequalityNigeriaExploring2017]. The public health impact meaning for these figures in the northern regions is that central obesity accounts for 30% of stroke cases, 18% of myocardial infarction cases and 26% of dibetes cases. The corresponding numbers for the northern regions are 11%, 7% and 10%.  However, if ATP III criteria is used, measuring proportion of those at substantially increased risk for cardiovascular disease only, the northern regions have a higher prevalence (28% versus 21%). This means although southern regions have higher prevalence of central obesity in general, the northern regions' centrally obese are particularly at a substantially more increased risk for cardiovascular disease. This might explain the puzzling finding from a recent multi-center acute coronary sydnrome (ACS) registry study in Nigeria[@isezuoRegistryAcuteCoronary]. The authors of the study noted with interest the incidence of ACS in the less urbanized northern regions to be almost three times the rates in the socio-economically more advanced southern regions (59 versus 22.2 people per 100 000 hospitalized adult patients per year). This meta-analysis might partly explain the puzzling finding; the proportion of centrally obese at substantially higher risk (as defined by ATP III criteria) is higher in the northern than the southern regions.        
+    
+## Limitations of the Study       
+    
+Majority of the included studies are of low methodological quality with subjects not representative of the general population or employing convenient sampling methods. This will have negative effect on the validity of our estimates. However, the quality appraisal of the included studies (Supplemental Material S3) might help in improving the validity as out of the 40 included studies only 18 were judged to be of good methodological quality and included in the quantitative analysis. The study also relied on reported adjusted relative risk measures for stroke, MI and diabetes from case-control studies. Since these are just approximations of true relative risk, our estimates of population attributable fractions will only be approximations.    
+    
+# CONCLUSION AND RECOMMENDATIONS            
+    
+The burden of central obesity in Nigeria is high with `r round(criteria_prev[2,1]*100, digits=0)`% of adult Nigerians being centrally obese (by IDF criteria).  This means central obesity might be responsible for as much as 24% of stroke cases, 15% of myocardial infarction cases and 21% of diabetes cases in the country. For females these numbers are alarming (33% of stroke cases, 21% of myocardial infarction cases and 29% of diabetes cases); so are numbers for urban residents (27% of stroke cases, 17% of myocardial infarction cases and 24% of diabetes cases). These percentages reflect the burden of diabetes and cardiovascular disease that can be eliminated by eliminating central obesity through effective public health interventions.        
+    
+The NMSAP for the Prevention and Control of Non-communicable diseases (2019-2025) needs to reflect the burden of central obesity as well its public health impact. Public health impact assessment of risk factors is necessary for both planning (such as targeting high risk groups such as females and urban residents) as well as advocacy in mobilizing non-health sectors and non-state actors for action.         
+Future population based cohort studies are  needed to establish if the differences in the central obesity prevalence rates are related to differences in the prevalence and incidence of diabetes, cardiovascular diseases and all-cause mortality. 

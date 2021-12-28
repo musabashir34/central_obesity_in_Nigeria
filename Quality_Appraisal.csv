@@ -1,0 +1,42 @@
+,study_id,study.year,settlement,state,region,Level_of_measurement,criteria,sample_size,sample.frame,sampling,sample_size.1,subjects.and.setting,valid.methods,reliable.methods,Total.Score,Quality
+1,Adamu[28],2012,urban,sokoto,north_west,NA,IDF,298,0,0,1,1,1,0,3,Poor
+2,Adediran[29],2012,urban+rural,abuja,north_central,MPBICLR,IDF,667,2,0,1,1,0,1,5,Poor
+3,Adegoke[30],2021,urban,lagos,south_west,MPBICLR,IDF,5135,2,2,1,1,1,1,8,Good
+4,Adegoke_b[31],2010,rural,osun,south_west,NA,ATP III,132,2,0,0,1,0,0,3,Poor
+5,Adejumo[32],2019,mixed,mixed,south_west,iliac_crest,IDF,535,2,2,1,1,0,1,7,Good
+6,Adejumo_b[33],2018,urban,ogun,south_west,iliac_crest,IDF,140,0,0,0,1,0,1,2,Poor
+7,Adeoye[34],2016,urban,ibadan,south_west,MPBICLR,IDF,352,0,0,1,1,0,1,3,Poor
+8,Adeyemi[35],2017,urban,ogun,south_west,NA,IDF,550,2,2,1,1,1,0,7,Good
+9,Ahaneku[36],2011,rural,enugu,south_east,umblicus,ATP III,257,2,0,1,1,1,1,6,Moderate
+10,Ayogu[37],2019,urban,anambra,south_east,NA,IDF,493,0,0,1,1,0,0,2,Poor
+11,Babatunde[38],2020,urban,oyo,south_west,NA,ATP III,260,0,0,1,1,1,0,3,Poor
+12,Bathna[39],2017,urban,gombe,north_east,NA,ATP III,1302,2,2,1,1,0,0,6,Moderate
+13,Bello-Ovosi[40],2016,urban,kaduna,north_west,iliac_crest,IDF,181,0,0,0,1,0,1,2,Poor
+14,Bolaji[41],2018,urban,ekiti,south_west,NA,IDF,220,0,0,1,0,0,1,2,Poor
+15,Casmir[42],2018,urban,lagos,south_west,MPBICLR,ATP III,293,0,0,1,1,0,1,3,Poor
+16,Chukwukelu[43],2009,urban+rural,enugu,south_east,MPBICLR,ATP III,205,2,2,1,1,0,1,7,Good
+17,Chukwuonye[44],2013,mixed,abia,south_east,iliac_crest,ATP III,2807,2,2,1,1,1,1,8,Good
+18,Egbi[45],2015,urban,bayelsa,south_south,MPBICLR,ATP III,231,0,0,1,1,1,1,4,Poor
+19,Ejike[46],2012,urban,abia,south_east,MPBICLR,IDF,1584,0,0,1,1,0,1,3,Poor
+20,Ezekwesili[47],2016,mixed,anambra,south_east,iliac_crest,ATP III,912,0,0,1,1,0,1,3,Poor
+21,Gezawa[48],2015,urban,maiduguri,north_east,MPBICLR,ATP III,242,0,0,1,0,0,1,2,Poor
+22,Gwarzo[49],2020,urban,kano,north_west,MPBICLR,IDF,149,0,0,0,1,0,1,2,Poor
+23,Joseph-Shehu[50],2016,urban,mixed,mixed,MPBICLR,ATP III,280,0,0,1,1,0,1,3,Poor
+24,Nwatu[51],2013,rural,enugu,south_east,MPBICLR,IDF,824,2,2,1,1,1,1,8,Good
+25,Ogunmola[52],2013,rural,ekiti,south_west,iliac_crest,ATP III,104,2,0,0,1,1,1,5,Poor
+26,Oguoma[53],2014,urban+rural,delta,south_south,MPBICLR,IDF,422,2,2,1,1,1,1,8,Good
+27,Ogwumike[54],2015,urban,oyo,south_west,umblicus,ATP III,310,0,0,1,1,0,1,3,Poor
+28,Okafor[55],2016,urban,enugu,south_east,MPBICLR,IDF,898,2,2,1,1,0,1,7,Good
+29,Okosun[56],1996,urban,ibadan,south_west,MPBICLR,IDF,1931,2,2,1,1,1,1,8,Good
+30,Oladapo[57],2005,rural,ibadan,south_west,NA,ATP III,2000,2,2,1,1,1,0,7,Good
+31,Olatona[58],2018,urban,lagos,south_west,NA,IDF,503,0,0,1,1,0,0,2,Poor
+32,Olatunbosun[59],2018,urban,ibadan,south_west,NA,IDF,981,0,0,1,1,0,0,2,Poor
+33,Oluyombo[60],2016,urban,mixed,south_west,MPBICLR,IDF,1083,2,2,1,1,0,1,7,Good
+34,Puepet[61],2008,urban,plateu,north_central,MPBICLR,ATP III,825,2,2,1,1,1,1,8,Good
+35,Rufai[62],2019,urban,maiduguri,north_east,MPBICLR,ATP III,364,0,0,1,1,0,1,3,Poor
+36,Sabir[63],2008,urban+rural,sokoto,north_west,MPBICLR,IDF,782,2,2,1,1,1,1,8,Good
+37,Sabir_b[64],2016,urban,sokoto,north_west,NA,ATP III,410,2,2,1,1,0,0,6,Moderate
+38,Sani[65],2006,urban,katsina,north_west,NA,ATP III,300,0,0,1,1,1,0,3,Poor
+39,Sola[66],2011,urban+rural,benue,north_central,MPBICLR,IDF,435,2,2,1,1,0,1,7,Good
+40,Ulasi[67],2010,urban+rural,enugu,south_east,MPBICLR,IDF,1458,2,2,1,1,1,1,8,Good
+MPBICLR = midpoint between iliac crest and lower ribs,,,,,,,,,,,,,,,,

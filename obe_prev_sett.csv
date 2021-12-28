@@ -1,0 +1,20 @@
+study_id,study.year,settlement,state,region,technique,criteria,obs_count,sample_sz,age,mean_wc
+Adeyemi,2017,urban,ogun,Southern,NA,IDF,265,550,NA,84.9
+Ahaneku,2011,rural,enugu,Southern,umblicus,ATP III,79,257,55.1,NA
+Bathna,2017,urban,gombe,Northern,Not Reported,ATP III,75,1302,36.3,71.7
+Chukwukelu,2009,urban,enugu,Southern,midpoint,ATP III,35,205,NA,90.82
+Chukwukelu,2009,rural,enugu,Southern,midpoint,ATP III,24,205,NA,83.35
+Chukwuonye,2013,urban+rural,abia,Southern,iliac_crest,ATP III,605,2807,42,83.7
+Nwatu,2013,rural,enugu,Southern,midpoint,IDF,277,824,51.1,NA
+Oguoma,2014,urban,delta,Southern,midpoint,IDF,69,96,45.1,94.1
+Oguoma,2014,rural,delta,Southern,midpoint,IDF,148,326,38.5,85
+Okafor,2016,urban,enugu,Southern,midpoint,IDF,597,898,48.7,91.1
+Oladapo,2005,rural,ibadan,Southern,NA,ATP III,124,2000,42.1,88.5
+Puepet,2008,urban,plateu,Northern,midpoint,ATP III,490,825,38.2,NA
+Sabir_a,2008,urban,sokoto,Northern,midpoint,IDF,141,389,39.4,84.3
+Sabir_a,2008,rural,sokoto,Northern,midpoint,IDF,77,393,38.5,78.6
+Sabir_b,2016,urban,sokoto,Northern,Not Reported,ATP III,115,410,39.6,86.2
+Sola,2011,urban,benue,Northern,midpoint,IDF,23,246,24.2,76.3
+Sola,2011,rural,benue,Northern,midpoint,IDF,22,189,24.2,77.4
+Ulasi,2010,urban,enugu,Southern,midpoint,IDF,477,1088,42.3,NA
+Ulasi,2010,rural,enugu,Southern,midpoint,IDF,123,370,48.2,NA

@@ -1,0 +1,29 @@
+study_id,study.year,settlement,state,region,technique,criteria,obs_count,gender,sample_sz,age,mean_wc
+Adeyemi,2017,urban,ogun,Southern,NA,IDF,52,males,249,NA,83.27
+Adeyemi,2017,urban,ogun,Southern,NA,IDF,213,females,301,NA,86.22
+Ahaneku,2011,rural,enugu,Southern,umblicus,ATP III,10,males,76,59.5,NA
+Ahaneku,2011,rural,enugu,Southern,umblicus,ATP III,69,females,181,53.3,NA
+Bathna,2017,urban,gombe,Northern,Not Reported,ATP III,32,males,571,35.31,78.73
+Bathna,2017,urban,gombe,Northern,Not Reported,ATP III,43,females,731,37.68,66.25
+Chukwuonye,2013,urban+rural,abia,Southern,iliac_crest,ATP III,43,males,1378,41.6,81.7
+Chukwuonye,2013,urban+rural,abia,Southern,iliac_crest,ATP III,562,females,1429,42.3,85.7
+Nwatu,2013,rural,enugu,Southern,midpoint,IDF,33,males,286,NA,NA
+Nwatu,2013,rural,enugu,Southern,midpoint,IDF,244,females,538,NA,NA
+Oguoma,2014,urban+rural,delta,Southern,midpoint,IDF,42,males,149,38.3,87.2
+Oguoma,2014,urban+rural,delta,Southern,midpoint,IDF,177,females,273,42.9,86.7
+Oladapo,2005,rural,ibadan,Southern,NA,ATP III,23,males,873,NA,87.1
+Oladapo,2005,rural,ibadan,Southern,NA,ATP III,101,females,1127,NA,89.5
+Puepet,2008,urban,plateu,Northern,midpoint,ATP III,128,males,403,36.4,NA
+Puepet,2008,urban,plateu,Northern,midpoint,ATP III,362,females,422,39.9,NA
+Sabir,2008,urban,sokoto,Northern,midpoint,IDF,28,males,199,42.1,85.5
+Sabir,2008,rural,sokoto,Northern,midpoint,IDF,13,males,210,40.3,79.2
+Sabir,2008,urban,sokoto,Northern,midpoint,IDF,113,females,190,36.4,82.9
+Sabir,2008,rural,sokoto,Northern,midpoint,IDF,64,females,183,36.6,77.9
+Sabir_b,2016,urban,sokoto,Northern,Not Reported,ATP III,11,males,201,38.4,80.9
+Sabir_b,2016,urban,sokoto,Northern,Not Reported,ATP III,104,females,209,40.8,90.8
+Sola,2011,urban+rural,benue,Northern,midpoint,IDF,7,males,298,25.1,77.3
+Sola,2011,urban+rural,benue,Northern,midpoint,IDF,38,females,137,22.4,75.6
+Ulasi,2010,urban,enugu,Southern,midpoint,IDF,90,males,540,NA,NA
+Ulasi,2010,rural,enugu,Southern,midpoint,IDF,15,males,169,NA,NA
+Ulasi,2010,urban,enugu,Southern,midpoint,IDF,387,females,548,NA,NA
+Ulasi,2010,rural,enugu,Southern,midpoint,IDF,108,females,201,NA,NA

@@ -1,0 +1,19 @@
+study_id,study.year,settlement,state,region,technique,criteria,sample_size,age
+Adegoke,2021,urban,lagos,south_west,midpoint,IDF,5135,51.3
+Adejumo,2019,urban+rural,mixed,south_west,iliac_crest,IDF,535,41.7
+Adeyemi,2017,urban,ogun,south_west,Not Reported,IDF,550,NA
+Ahaneku,2011,rural,enugu,south_east,umblicus,ATP III,257,55.1
+Bathna,2017,urban,gombe,north_east,Not Reported,ATP III,1302,36.3
+Chukwukelu,2009,urban+rural,enugu,south_east,midpoint,ATP III,205,NA
+Chukwuonye,2013,urban+rural,abia,south_east,iliac_crest,ATP III,2807,42
+Nwatu,2013,rural,enugu,south_east,midpoint,IDF,824,51.1
+Oguoma,2014,urban+rural,delta,south_south,midpoint,IDF,422,40
+Okafor,2016,urban,enugu,south_east,midpoint,IDF,898,48.7
+Okosun,1996,urban,ibadan,south_west,midpoint,IDF,1931,40.7
+Oladapo,2005,rural,ibadan,south_west,Not Reported,ATP III,2000,42.1
+Oluyombo,2016,urban,mixed,south_west,midpoint,IDF,1083,55.1
+Puepet,2008,urban,plateu,north_central,midpoint,ATP III,825,38.2
+Sabir_a,2008,urban+rural,sokoto,north_west,midpoint,IDF,782,38.9
+Sabir_b,2016,urban,sokoto,north_west,Not Reported,ATP III,410,39.6
+Sola,2011,urban+rural,benue,north_central,midpoint,IDF,435,24.2
+Ulasi,2010,urban+rural,enugu,south_east,midpoint,IDF,1458,43.8

@@ -1,0 +1,15 @@
+study_id,study.year,settlement,state,region,technique,criteria,sample_sz,age,mean_wc,wc_sd,whr,whr_sd,Proportion_of_high_WC
+Adegoke,2021,urban,lagos,Southern,midpoint,IDF,5135,37.5,87.1,13.7,0.88,0.1,NA
+Adejumo,2019,urban+rural,mixed,Southern,iliac_crest,IDF,535,47.1,89.8,13.46,NA,NA,NA
+Adeyemi,2017,urban,ogun,Southern,NA,IDF,550,NA,84.9,10.53,0.84,0.1,48.18181818
+Bathna,2017,urban,gombe,Northern,Not Reported,ATP III,1302,36.3,71.7,12.2,0.78,0.09,5.760368664
+Chukwukelu,2009,urban+rural,enugu,Southern,midpoint,ATP III,205,NA,87.1,11,NA,NA,28.8
+Chukwuonye,2013,urban+rural,abia,Southern,iliac_crest,ATP III,2807,42,83.7,11.6,NA,NA,21.55325971
+Oguoma,2014,urban,delta,Southern,midpoint,IDF,422,40,87.1,8.9,NA,NA,51.42180095
+Okafor,2016,urban,enugu,Southern,midpoint,IDF,898,48.7,91.1,11.6,0.92,0.07,66.48106904
+Okosun,1996,urban,ibadan,Southern,midpoint,IDF,1931,40.7,76.6,9.8,0.85,0.07,NA
+Oladapo,2005,rural,ibadan,Southern,NA,ATP III,2000,42.1,88.5,19.2,NA,NA,6.2
+Oluyombo,2016,urban,mixed,Southern,midpoint,IDF,1083,55.1,83.2,11.8,NA,NA,NA
+Sabir_a,2008,urban,sokoto,Northern,midpoint,IDF,782,38.9,81.4,10.1,0.86,0.07,28
+Sabir_b,2016,urban,sokoto,Northern,Not Reported,ATP III,410,39.6,86.2,13.7,NA,NA,28
+Sola,2011,urban,benue,Northern,midpoint,IDF,435,24.2,76.8,0.3,NA,NA,10.34482759
